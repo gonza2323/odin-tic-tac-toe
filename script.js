@@ -80,8 +80,27 @@ const game = (function() {
 
 
     function checkPlayerWon(player) {
-        return false;
+        let hasDiag1 = true;
+        let hasDiag2 = true;
+        
+        for (let i = 0; i < 3; i++) {
+            let hasCol = true;
+            let hasRow = true;
+
+            for (let j = 0; j < 3; j++) {
+                hasCol &&= board.get(i,j) === player;
+                hasRow &&= board.get(j,i) === player;
+            }
+
+            if (hasCol || hasRow) { return true; }
+
+            hasDiag1 &&= board.get(i,i) === player;
+            hasDiag2 &&= board.get(i,2-i) === player;
+        }
+
+        return (hasDiag1 || hasDiag2);
     }
+
 
     init();
 
