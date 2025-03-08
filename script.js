@@ -36,7 +36,7 @@ function createBoard() {
     }
 
     reset();
-    return { get, set, isFull };
+    return { get, set, isFull, reset };
 }
 
 
@@ -48,9 +48,10 @@ const game = (function() {
 
 
     function init() {
+        board.reset();
         currentPlayer = player1;
-        // currentPlayer = Math.random() < 0.5 ? player1 : player2;
-        console.log(`${currentPlayer.getName()} goes first!`);
+        console.log(`New game started!`);
+        console.log(`${currentPlayer.getName()} goes first.`);
     }
 
 
@@ -65,6 +66,7 @@ const game = (function() {
 
         if (checkPlayerWon(currentPlayer)) {
             console.log(`${currentPlayer.getName()} won!`);
+            init();
             return true;
         }
 
