@@ -108,3 +108,31 @@ const game = (function() {
 
     return { placeMarker };
 })();
+
+
+// UI
+
+function createBoardUI() {
+    const board = document.querySelector(".board");
+
+    for (let y = 0; y < 3; y++) {
+        for (let x = 0; x < 3; x++) {
+            const tile = createTile(x, y);
+            board.appendChild(tile);
+        }
+    }
+}
+
+
+function createTile(x, y) {
+    const template = document.querySelector(".template");
+    const tile = template.cloneNode(true);
+    tile.classList.remove("template");
+    tile.dataset.column = x;
+    tile.dataset.row = y;
+
+    return tile;
+}
+
+
+createBoardUI();
