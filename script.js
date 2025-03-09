@@ -41,10 +41,11 @@ const board = (function() {
 
 function createGame(player1, player2) {
     let currentPlayer = player1;
-    let gameOver;
+    let gameOver = false;
 
     function reset() {
         gameOver = false;
+        currentPlayer = player1;
         board.reset();
         console.log(`New game started!`);
         console.log(`${currentPlayer.getName()} goes first.`);
