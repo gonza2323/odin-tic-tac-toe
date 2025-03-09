@@ -2,7 +2,6 @@
 
 
 function createPlayer(name) {
-
     function getName() {
         return name;
     }
@@ -11,7 +10,7 @@ function createPlayer(name) {
 }
 
 
-function createBoard() {
+const board = (function() {
     const board = [];
 
     function reset() {
@@ -37,27 +36,23 @@ function createBoard() {
 
     reset();
     return { get, set, isFull, reset };
-}
+})();
 
 
-const game = (function() {
-    const board = createBoard();
-    const player1 = createPlayer("Alice");
-    const player2 = createPlayer("Bob");
+function createGame(player1, player2) {
     let currentPlayer = player1;
-    let gameover = false;
+    let gameOver;
 
-
-    function init() {
+    function reset() {
+        gameOver = false;
         board.reset();
         console.log(`New game started!`);
         console.log(`${currentPlayer.getName()} goes first.`);
     }
 
-
     function tryPlaceMarker(x, y) {
-        if (gameover) {
-            console.log(`Game is over! ${currentPlayer.getName()} won.`);
+        if (gameOver) {
+            console.log("Game is over. Restart or create a new game.");
             return false;
         }
 
@@ -69,23 +64,29 @@ const game = (function() {
         board.set(x, y, currentPlayer);
         console.log(`${currentPlayer.getName()} placed a piece at pos: (${x}, ${y}).`);
 
-        if (checkPlayerWon(currentPlayer)) {
-            console.log(`${currentPlayer.getName()} won!`);
-            gameover = true;
+        if (checkGameOver())
             return true;
-        }
-
-        if (board.isFull()) {
-            console.log("It's a tie!");
-            gameover = true;
-            return true;
-        }
 
         currentPlayer = (currentPlayer === player1)? player2 : player1;
         console.log(`It's ${currentPlayer.getName()}'s turn.`);
         return true;
     }
 
+    function checkGameOver() {
+        if (checkPlayerWon(currentPlayer)) {
+            console.log(`${currentPlayer.getName()} won!`);
+            gameOver = true;
+            return true;
+        }
+
+        if (board.isFull()) {
+            console.log("It's a tie!");
+            gameOver = true;
+            return true;
+        }
+
+        return false;
+    }
 
     function checkPlayerWon(player) {
         let hasDiag1 = true;
@@ -109,70 +110,117 @@ const game = (function() {
         return (hasDiag1 || hasDiag2);
     }
 
-
-    function getCurrentPlayer() { return currentPlayer; }
-    function getPlayers() {
-        return {
-            player1,
-            player2
-        }
+    function getCurrentPlayer() {
+        return (player1 === currentPlayer) ? "player1" : "player2";
     }
 
+    reset();
+    return { tryPlaceMarker, reset, getCurrentPlayer };
+};
 
-    init();
 
-    return { tryPlaceMarker, getCurrentPlayer, getPlayers };
+const app = (function() {
+    let game = null;
+
+    function reset() {
+        if (game)
+            game.reset();
+    }
+
+    function startNewGame(player1Name, player2Name) {
+        const player1 = createPlayer(player1Name);
+        const player2 = createPlayer(player2Name);
+        game = createGame(player1, player2);
+    }
+
+    function tryPlaceMarker(x, y) {
+        if (game)
+            return game.tryPlaceMarker(x, y);
+        return false;
+    }
+
+    function getCurrentPlayer() {
+        if (game)
+            return game.getCurrentPlayer();
+        return null;
+    }
+
+    return { reset, startNewGame, tryPlaceMarker, getCurrentPlayer };
 })();
 
 
-// UI
-
-function createBoardUI() {
-    const board = document.querySelector(".board");
-    board.addEventListener("click", handleTileClick);
-
-    for (let y = 0; y < 3; y++) {
-        for (let x = 0; x < 3; x++) {
-            const tile = createTile(x, y);
-            board.appendChild(tile);
+const ui = (function() {
+    function createBoardUI() {
+        const board = document.querySelector(".board");
+        board.addEventListener("click", handleTileClick);
+    
+        for (let y = 0; y < 3; y++) {
+            for (let x = 0; x < 3; x++) {
+                const tile = createTile(x, y);
+                board.appendChild(tile);
+            }
         }
     }
-}
 
-
-function createTile(x, y) {
-    const template = document.querySelector(".template");
-    const tile = template.cloneNode(true);
-    tile.classList.remove("template");
-    tile.dataset.col = x;
-    tile.dataset.row = y;
-
-    return tile;
-}
-
-
-function handleTileClick(event) {
-    const tile = event.target.closest(".tile");
-
-    const col = tile.dataset.col;
-    const row = tile.dataset.row;
+    function createTile(x, y) {
+        const template = document.querySelector(".template");
+        const tile = template.cloneNode(true);
+        tile.classList.remove("template");
+        tile.dataset.col = x;
+        tile.dataset.row = y;
     
-    if (col === undefined || row === undefined)
-        return;
+        return tile;
+    }
 
-    const player = game.getCurrentPlayer();
-    const player1 = game.getPlayers().player1;
-    const player2 = game.getPlayers().player2;
-    const success = game.tryPlaceMarker(col, row);
+    function resetBoard() {
+        const tiles = document.querySelectorAll(".board .tile");
+        tiles.forEach(tile => {
+            tile.dataset.marker = "empty";
+        })
+    }
 
-    if (!success)
-        return;
+    function handleTileClick(event) {
+        const tile = event.target.closest(".tile");
 
-    if (player === player1)
-        tile.dataset.marker = "cross";
-    else if (player === player2)
-        tile.dataset.marker = "circle";
-}
+        if (!tile)
+            return;
+    
+        const col = tile.dataset.col;
+        const row = tile.dataset.row;
+        
+        if (col === undefined || row === undefined)
+            return;
+    
+        const player = app.getCurrentPlayer();
+        
+        if (app.tryPlaceMarker(col, row))
+            tile.dataset.marker = player === "player1" ? "cross" : "circle";
+    }
+
+    function handleNewGame(event) {
+        const form = event.target;
+        const player1Name = form.player1name.value;
+        const player2Name = form.player2name.value;
+        app.startNewGame(player1Name, player2Name);
+        resetBoard();
+    }
+
+    function handleReset() {
+        app.reset();
+        resetBoard();
+    }
+    
+    const newGameDialog = document.querySelector(".new-game-dialog");
+    newGameDialog.addEventListener("submit", handleNewGame)
+
+    const resetButton = document.querySelector(".reset");
+    resetButton.addEventListener("click", handleReset);
+    
+    const newGameButton = document.querySelector(".new-game-button");
+    newGameButton.addEventListener("click", () => newGameDialog.show());
 
 
-createBoardUI();
+    createBoardUI();
+    newGameDialog.show();
+    return {};
+})();
