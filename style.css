@@ -61,6 +61,13 @@
 }
 
 body {
+    color: var(--gray-100);
+}
+
+.main {
+    background-color: var(--gray-950);
+
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -68,21 +75,28 @@ body {
     gap: 32px;
 }
 
+.players {
+    width: min(100%, 400px);
+    text-align: center;
+    
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
 .board {
-    background-color: gray;
     padding: 8px;
     width: min(100%, 500px);
 
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    border: 1px solid red;
     justify-content: center;
-    gap: 8px;
+    gap: 16px;
 }
 
 .tile {
-    border: 1px solid blue;
     aspect-ratio: 1;
+    background-color: var(--gray-900);
+    border-radius: 8px;
 }
 
 .marker {
@@ -90,10 +104,12 @@ body {
 }
 
 .tile[data-marker="cross"] .cross {
+    fill: var(--blue-500);
     display: block;
 }
 
 .tile[data-marker="circle"] .circle {
+    fill: var(--orange-500);
     display: block;
 }
 
@@ -101,10 +117,36 @@ body {
     
 }
 
+
+/* dialog */
+
+dialog:modal {
+    max-width: none;
+    max-height: none;
+}
+
+.new-game-dialog {
+    background-color: var(--gray-900);
+    color: white;
+    border: none;
+
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+}
+
+
+/* other */
+
 button {
     background: none;
     border: none;
     padding: 0;
+    color: inherit;
+}
+
+button:hover {
+    cursor: pointer;
 }
 
 .template {

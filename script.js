@@ -202,7 +202,12 @@ const ui = (function() {
         const form = event.target;
         const player1Name = form.player1name.value;
         const player2Name = form.player2name.value;
+        const player1nameElem = document.querySelector(".player1name");
+        const player2nameElem = document.querySelector(".player2name");
+        
         app.startNewGame(player1Name, player2Name);
+        player1nameElem.textContent = player1Name;
+        player2nameElem.textContent = player2Name;
         resetBoard();
     }
 
@@ -212,16 +217,20 @@ const ui = (function() {
     }
     
     const newGameDialog = document.querySelector(".new-game-dialog");
-    newGameDialog.addEventListener("submit", handleNewGame)
+    newGameDialog.addEventListener("submit", handleNewGame);
+    newGameDialog.addEventListener('keydown', e => {
+        if (e.key === "Escape")
+            e.preventDefault();
+    })
 
     const resetButton = document.querySelector(".reset");
     resetButton.addEventListener("click", handleReset);
     
     const newGameButton = document.querySelector(".new-game-button");
-    newGameButton.addEventListener("click", () => newGameDialog.show());
+    newGameButton.addEventListener("click", () => newGameDialog.showModal());
 
 
     createBoardUI();
-    newGameDialog.show();
+    newGameDialog.showModal();
     return {};
 })();
