@@ -77,12 +77,14 @@ function createGame(player1, player2) {
         if (checkPlayerWon(currentPlayer)) {
             console.log(`${currentPlayer.getName()} won!`);
             gameOver = true;
+            ui.showWin();
             return true;
         }
 
         if (board.isFull()) {
             console.log("It's a tie!");
             gameOver = true;
+            ui.showTie();
             return true;
         }
 
@@ -215,6 +217,12 @@ const ui = (function() {
         app.reset();
         resetBoard();
     }
+
+    function showWin() {
+    }
+
+    function showTie() {
+    }
     
     const newGameDialog = document.querySelector(".new-game-dialog");
     newGameDialog.addEventListener("submit", handleNewGame);
@@ -232,5 +240,6 @@ const ui = (function() {
 
     createBoardUI();
     newGameDialog.showModal();
-    return {};
+    
+    return { showWin, showTie };
 })();

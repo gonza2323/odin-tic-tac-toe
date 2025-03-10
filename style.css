@@ -125,14 +125,45 @@ dialog:modal {
     max-height: none;
 }
 
-.new-game-dialog {
-    background-color: var(--gray-900);
+.new-game-dialog[open] {
+    background-color: var(--gray-950);
     color: white;
     border: none;
 
     position: fixed;
     width: 100vw;
     height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    background-color: var(--gray-900);
+    border: 2px solid var(--accent2-700);
+    border-radius: 8px;
+    padding: 36px 48px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+label {
+    display: block;
+}
+
+.button {
+    background-color: var(--accent2-500);
+    color: var(--gray-900);
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+
+.button[type="submit"] {
+    align-self: flex-end;
 }
 
 
