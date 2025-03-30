@@ -60,6 +60,12 @@
     --accent2-900: #332d00;
 }
 
+* {
+    font-family: Anta, Arial, Helvetica, sans-serif;
+    color: var(--gray-100);
+    fill: var(--gray-100);
+}
+
 body {
     color: var(--gray-100);
 }
@@ -135,13 +141,23 @@ dialog:modal {
     height: 100vh;
 
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
 }
 
+.logo {
+    height: 150px;
+    margin-top: 96px;
+}
+
+h1 {
+    margin-bottom: 48px;
+    font-size: 36px;
+}
+
 form {
-    background-color: var(--gray-900);
-    border: 2px solid var(--accent2-700);
+    background-color: var(--gray-1000);
+    border: 3px solid var(--blue-600);
     border-radius: 8px;
     padding: 36px 48px;
 
@@ -151,15 +167,39 @@ form {
 }
 
 label {
-    display: block;
+    font-size: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+input[type="text"] {
+    background-color: var(--gray-900);
+    outline: none;
+    border: 2px solid var(--blue-500);
+    border-radius: 8px;
+    padding: 4px 16px;
+}
+
+input[type="text"]:focus {
+    border-color: var(--blue-300);
 }
 
 .button {
-    background-color: var(--accent2-500);
-    color: var(--gray-900);
-    font-weight: bold;
+    background-color: var(--blue-500);
+    color: var(--gray-950);
+    font-size: 20px;
     border-radius: 8px;
     padding: 8px 16px;
+}
+
+.button:hover {
+    background-color: var(--blue-400);
+}
+
+.button:focus {
+    outline: 3px solid var(--blue-200);
 }
 
 .button[type="submit"] {
