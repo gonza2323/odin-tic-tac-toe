@@ -63,11 +63,11 @@
 * {
     font-family: Anta, Arial, Helvetica, sans-serif;
     color: var(--gray-100);
-    fill: var(--gray-100);
 }
 
 body {
     color: var(--gray-100);
+    fill: var(--gray-100);
 }
 
 .main {
@@ -81,16 +81,34 @@ body {
     gap: 32px;
 }
 
+.main .logo {
+    height: 124px;
+}
+
 .players {
-    width: min(100%, 400px);
+    grid-template-columns: 1fr min-content 1fr;
     text-align: center;
-    
+    width: min(100%, 500px);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    align-items: baseline;
+    gap: 24px;
+}
+
+.playername {
+    font-size: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.player1name {
+    text-align: left;
+}
+
+.player2name {
+    text-align: right;
 }
 
 .board {
-    padding: 8px;
     width: min(100%, 500px);
 
     display: grid;
@@ -103,6 +121,14 @@ body {
     aspect-ratio: 1;
     background-color: var(--gray-900);
     border-radius: 8px;
+}
+
+.tile:hover {
+    background-color: var(--gray-800);
+}
+
+.tile:focus-visible {
+    outline: 2px solid var(--gray-500);
 }
 
 .marker {
@@ -121,6 +147,17 @@ body {
 
 .tile[data-marker="empty"] {
     
+}
+
+.buttons {
+    width: min(500px, 100%);
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.new-game-button {
+    grid-column: 3;
 }
 
 
@@ -145,7 +182,7 @@ dialog:modal {
     align-items: center;
 }
 
-.logo {
+.new-game-dialog .logo {
     height: 150px;
     margin-top: 96px;
 }
@@ -160,6 +197,7 @@ form {
     border: 3px solid var(--blue-600);
     border-radius: 8px;
     padding: 36px 48px;
+    width: min(100%, 550px);
 
     display: flex;
     flex-direction: column;
@@ -169,12 +207,20 @@ form {
 label {
     font-size: 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    flex-wrap: wrap;
+    gap: 24px;
+    row-gap: 8px;
+}
+
+label span {
+    flex: 0 0 140px;
+    display: block;
 }
 
 input[type="text"] {
+    flex: 1;
+    width: 180px;;
     background-color: var(--gray-900);
     outline: none;
     border: 2px solid var(--blue-500);
@@ -186,19 +232,15 @@ input[type="text"]:focus {
     border-color: var(--blue-300);
 }
 
-.button {
-    background-color: var(--blue-500);
-    color: var(--gray-950);
-    font-size: 20px;
-    border-radius: 8px;
-    padding: 8px 16px;
+.new-game-dialog .button {
+    margin-top: 16px;
 }
 
 .button:hover {
     background-color: var(--blue-400);
 }
 
-.button:focus {
+.button:focus-visible    {
     outline: 3px solid var(--blue-200);
 }
 
@@ -216,10 +258,22 @@ button {
     color: inherit;
 }
 
+.button {
+    background-color: var(--blue-500);
+    color: var(--gray-950);
+    font-size: 20px;
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+
 button:hover {
     cursor: pointer;
 }
 
 .template {
     display: none;
+}
+
+.blue {
+    color: var(--blue-400);
 }
