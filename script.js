@@ -21,7 +21,7 @@ const board = (function() {
     function get(x, y) {
         return board[y][x];
     }
-    
+
     function set(x, y, player) {
         board[y][x] = player;
     }
@@ -74,7 +74,7 @@ function createGame(player1, player2) {
     }
 
     function checkGameOver() {
-        if (checkPlayerWon(currentPlayer)) {
+        if (checkPlayerWon()) {
             console.log(`${currentPlayer.getName()} won!`);
             gameOver = true;
             ui.showWin(currentPlayer.getName());
@@ -91,26 +91,54 @@ function createGame(player1, player2) {
         return false;
     }
 
-    function checkPlayerWon(player) {
+    function getWinningCells() {
+        const winningCells = new Set();
+
         let hasDiag1 = true;
         let hasDiag2 = true;
+        const diag1 = [];
+        const diag2 = [];
         
         for (let i = 0; i < 3; i++) {
             let hasCol = true;
             let hasRow = true;
+            const col = [];
+            const row = [];
 
             for (let j = 0; j < 3; j++) {
-                hasCol &&= board.get(i,j) === player;
-                hasRow &&= board.get(j,i) === player;
+                hasCol &&= board.get(i,j) === currentPlayer;
+                hasRow &&= board.get(j,i) === currentPlayer;
+                col.push({x: i, y: j});
+                row.push({x: j, y: i});
             }
 
-            if (hasCol || hasRow) { return true; }
+            if (hasRow) {
+                row.forEach(cell => winningCells.add(cell));
+            }
 
-            hasDiag1 &&= board.get(i,i) === player;
-            hasDiag2 &&= board.get(i,2-i) === player;
+            if (hasCol) {
+                col.forEach(cell => winningCells.add(cell));
+            }
+
+            hasDiag1 &&= board.get(i,i) === currentPlayer;
+            hasDiag2 &&= board.get(i,2-i) === currentPlayer;
+            diag1.push({x: i, y: i});
+            diag2.push({x: i, y: 2-i});
         }
 
-        return (hasDiag1 || hasDiag2);
+        if (hasDiag1) {
+            diag1.forEach(cell => winningCells.add(cell));
+        }
+
+        if (hasDiag2) {
+            diag2.forEach(cell => winningCells.add(cell));
+        }
+
+        return winningCells;
+    }
+
+    function checkPlayerWon() {
+        return !!getWinningCells().size;
     }
 
     function getCurrentPlayer() {
@@ -118,7 +146,7 @@ function createGame(player1, player2) {
     }
 
     reset();
-    return { tryPlaceMarker, reset, getCurrentPlayer };
+    return { tryPlaceMarker, reset, getCurrentPlayer, getWinningCells };
 };
 
 
@@ -148,7 +176,13 @@ const app = (function() {
         return null;
     }
 
-    return { reset, startNewGame, tryPlaceMarker, getCurrentPlayer };
+    function getWinningCells() {
+        if (game)
+            return game.getWinningCells();
+        return null;
+    }
+
+    return { reset, startNewGame, tryPlaceMarker, getCurrentPlayer, getWinningCells };
 })();
 
 
@@ -179,6 +213,8 @@ const ui = (function() {
         const tiles = document.querySelectorAll(".board .tile");
         tiles.forEach(tile => {
             tile.dataset.marker = "empty";
+            tile.classList.remove('winning-tile-player1');
+            tile.classList.remove('winning-tile-player2');
         })
     }
 
@@ -226,6 +262,13 @@ const ui = (function() {
         const resultDialog = document.querySelector('.result-dialog');
         resultDialog.textContent = `${playerName} has won!`;
         resultDialog.show();
+
+        const winningPlayer = app.getCurrentPlayer();
+        const winningCells = app.getWinningCells();
+        winningCells.forEach( cell => {
+            const tile = document.querySelector(`.tile[data-col="${cell.x}"][data-row="${cell.y}"]`);
+            tile.classList.add(`winning-tile-${winningPlayer}`);
+        })
     }
 
     function showTie() {

@@ -149,6 +149,24 @@ body {
     
 }
 
+.winning-tile-player1 {
+    background-color: var(--blue-900);
+    outline: 4px solid var(--blue-600);
+}
+
+.winning-tile-player1:hover {
+    background-color: var(--blue-800);
+}
+
+.winning-tile-player2 {
+    background-color: var(--orange-800);
+    outline: 4px solid var(--orange-500);
+}
+
+.winning-tile-player2:hover {
+    background-color: var(--orange-800);
+}
+
 .buttons {
     width: min(500px, 100%);
     display: grid;
