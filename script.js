@@ -77,7 +77,7 @@ function createGame(player1, player2) {
         if (checkPlayerWon(currentPlayer)) {
             console.log(`${currentPlayer.getName()} won!`);
             gameOver = true;
-            ui.showWin();
+            ui.showWin(currentPlayer.getName());
             return true;
         }
 
@@ -206,22 +206,32 @@ const ui = (function() {
         const player2Name = form.player2name.value;
         const player1nameElem = document.querySelector(".player1name");
         const player2nameElem = document.querySelector(".player2name");
+        const resultDialog = document.querySelector('.result-dialog');
         
         app.startNewGame(player1Name, player2Name);
         player1nameElem.textContent = player1Name;
         player2nameElem.textContent = player2Name;
+        resultDialog.close();
         resetBoard();
     }
 
     function handleReset() {
+        const resultDialog = document.querySelector('.result-dialog');
+        resultDialog.close();
         app.reset();
         resetBoard();
     }
 
-    function showWin() {
+    function showWin(playerName) {
+        const resultDialog = document.querySelector('.result-dialog');
+        resultDialog.textContent = `${playerName} has won!`;
+        resultDialog.show();
     }
 
     function showTie() {
+        const resultDialog = document.querySelector('.result-dialog');
+        resultDialog.textContent = `It's a tie!`;
+        resultDialog.show();
     }
     
     const newGameDialog = document.querySelector(".new-game-dialog");

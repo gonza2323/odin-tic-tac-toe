@@ -161,7 +161,18 @@ body {
 }
 
 
-/* dialog */
+/* dialogs */
+
+.dialog {
+    background-color: var(--gray-950);
+    border: 3px solid var(--blue-600);
+
+    border-radius: 8px;
+    padding: 36px 48px;
+    width: min(100%, 550px);
+}
+
+/* new game dialog */
 
 dialog:modal {
     max-width: none;
@@ -170,7 +181,6 @@ dialog:modal {
 
 .new-game-dialog[open] {
     background-color: var(--gray-950);
-    color: white;
     border: none;
 
     position: fixed;
@@ -193,12 +203,6 @@ h1 {
 }
 
 form {
-    background-color: var(--gray-1000);
-    border: 3px solid var(--blue-600);
-    border-radius: 8px;
-    padding: 36px 48px;
-    width: min(100%, 550px);
-
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -246,6 +250,20 @@ input[type="text"]:focus {
 
 .button[type="submit"] {
     align-self: flex-end;
+}
+
+
+/* result dialog */
+
+.result-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 1.5rem;
+
+    text-align: center;
+    font-size: 36px;
 }
 
 
